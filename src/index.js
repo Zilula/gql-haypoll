@@ -15,7 +15,7 @@ import CreatePage from './components/CreatePage'
 import DetailPage from './components/DetailPage'
 
 import 'tachyons'
-import './index.css'
+import './index.scss'
 
 const client = new ApolloClient({ uri: 'http://localhost:4000' })
 
