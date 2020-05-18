@@ -9,6 +9,7 @@ type Query {
 type Mutation {
   createDraft(title: String!, content: String): Post
   createQuestion(title: String!, options: String!): Question
+  createVote(question: String, value: String): Vote
   deletePost(id: ID!): Post
   publish(id: ID!): Post
 }
@@ -24,4 +25,9 @@ type Question {
   id: ID!
   title: String!
   options: String!
+}
+type Vote {
+  id: ID!
+  question: String
+  value: String
 }

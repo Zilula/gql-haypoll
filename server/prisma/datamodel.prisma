@@ -10,3 +10,8 @@ type Question {
   options: String!
   title: String!
 }
+type Vote {
+  id: ID! @id
+  question: String
+  value: String!
+}

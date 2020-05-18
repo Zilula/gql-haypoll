@@ -32,6 +32,12 @@ const resolvers = {
         options
       })
     },
+    createVote(parent, { question, value }, context) {
+      return context.prisma.createVote({
+        question,
+        value
+      })
+    },
     deletePost(parent, { id }, context) {
       return context.prisma.deletePost({ id })
     },
