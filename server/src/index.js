@@ -15,6 +15,9 @@ const resolvers = {
     getQuestions: (parent, args, context) => {
       return context.prisma.questions()
     },
+    question: (parent, {id}, context) => {
+      return context.prisma.question({id})
+    }
   },
   Mutation: {
     createDraft(parent, { title, content }, context) {
@@ -23,11 +26,10 @@ const resolvers = {
         content,
       })
     },
-    createQuestion(parent, args, context) {
-      console.log(args)
+    createQuestion(parent, {title, options}, context) {
       return context.prisma.createQuestion({
-        title: 'hello',
-        options: 'asdasdasdasdasd'
+        title,
+        options
       })
     },
     deletePost(parent, { id }, context) {

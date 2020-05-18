@@ -23,17 +23,16 @@ export default class FeedPage extends Component {
               </div>
             )
           }
-
           return (
             <Fragment>
-              <h1>Feed</h1>
-              {data.feed &&
-                data.feed.map(post => (
+              <h1>Questions</h1>
+              {data.getQuestions &&
+                data.getQuestions.map(question => (
                   <Post
-                    key={post.id}
-                    post={post}
+                    key={question.id}
+                    question={question}
                     refresh={() => refetch()}
-                    isDraft={!post.published}
+                    isDraft={!question.published}
                   />
                 ))}
               {this.props.children}

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import  { gql } from 'apollo-boost'
-import { DRAFTS_QUERY } from './DraftsPage'
 
 class CreatePage extends Component {
   state = {
@@ -14,13 +13,6 @@ class CreatePage extends Component {
     return (
       <Mutation
         mutation={CREATE_QUESTION_MUTATION}
-        update={(cache, { data }) => {
-          const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
-          cache.writeQuery({
-            query: DRAFTS_QUERY,
-            data: { drafts: drafts.concat([data.createDraft]) },
-          })
-        }}
       >
         {(createQuestion, { data, loading, error }) => {
           return (
@@ -30,9 +22,9 @@ class CreatePage extends Component {
                   e.preventDefault()
                   const { title, one, two } = this.state
                   await createQuestion({
-                    variables: { title, options: [one, two] },
+                    variables: { title, options: one + two },
                   })
-                  this.props.history.replace('/drafts')
+                  this.props.history.push('/')
                 }}
               >
                 <h1>Create Draft</h1>
@@ -83,19 +75,8 @@ class CreatePage extends Component {
   }
 
 }
-
-const CREATE_DRAFT_MUTATION = gql`
-  mutation CreateDraftMutation($title: String!, $content: String!) {
-    createDraft(title: $title, content: $content) {
-      id
-      title
-      content
-    }
-  }
-`
-
 const CREATE_QUESTION_MUTATION = gql`
-  mutation CreateQuestionMutation($title: String!, $options: [String!]!) {
+  mutation CreateQuestionMutation($title: String!, $options: String!) {
     createQuestion(title: $title, options: $options) {
       id
       title

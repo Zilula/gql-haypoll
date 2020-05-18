@@ -2,13 +2,12 @@ import React, { Component, Fragment } from 'react'
 import { Query, Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import  { gql } from 'apollo-boost'
-import { DRAFTS_QUERY } from './DraftsPage'
 import { QUESTIONS_QUERY } from './FeedPage'
 
 class DetailPage extends Component {
   render() {
     return (
-      <Query query={POST_QUERY} variables={{ id: this.props.match.params.id }}>
+      <Query query={QUESTION_QUERY} variables={{ id: this.props.match.params.id }}>
         {({ data, loading, error }) => {
           if (loading) {
             return (
@@ -26,12 +25,12 @@ class DetailPage extends Component {
             )
           }
 
-          const { post } = data
-          const action = this._renderAction(post)
+          const { question } = data
+          const action = this._renderAction(question)
           return (
             <Fragment>
-              <h1 className="f3 black-80 fw4 lh-solid">{data.post.title}</h1>
-              <p className="black-80 fw3">{data.post.content}</p>
+              <h1 className="f3 black-80 fw4 lh-solid">{data.question.title}</h1>
+              <p className="black-80 fw3">{data.question.options}</p>
               {action}
             </Fragment>
           )
@@ -40,64 +39,10 @@ class DetailPage extends Component {
     )
   }
 
-  _renderAction = ({ id, published }) => {
-    const publishMutation = (
-      <Mutation
-        mutation={PUBLISH_MUTATION}
-        update={(cache, { data }) => {
-          const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
-          const { feed } = cache.readQuery({ query: QUESTIONS_QUERY })
-          cache.writeQuery({
-            query: QUESTIONS_QUERY,
-            data: { feed: feed.concat([data.publish]) },
-          })
-          cache.writeQuery({
-            query: DRAFTS_QUERY,
-            data: {
-              drafts: drafts.filter(draft => draft.id !== data.publish.id),
-            },
-          })
-        }}
-      >
-        {(publish, { data, loading, error }) => {
-          return (
-            <a
-              className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
-              onClick={async () => {
-                await publish({
-                  variables: { id },
-                })
-                this.props.history.replace('/')
-              }}
-            >
-              Publish
-            </a>
-          )
-        }}
-      </Mutation>
-    )
+  _renderAction = ({ id }) => {
     const deleteMutation = (
       <Mutation
         mutation={DELETE_MUTATION}
-        update={(cache, { data }) => {
-          if (published) {
-            const { feed } = cache.readQuery({ query: QUESTIONS_QUERY })
-            cache.writeQuery({
-              query: QUESTIONS_QUERY,
-              data: {
-                feed: feed.filter(post => post.id !== data.deletePost.id),
-              },
-            })
-          } else {
-            const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
-            cache.writeQuery({
-              query: DRAFTS_QUERY,
-              data: {
-                drafts: drafts.filter(draft => draft.id !== data.deletePost.id),
-              },
-            })
-          }
-        }}
       >
         {(deletePost, { data, loading, error }) => {
           return (
@@ -116,26 +61,20 @@ class DetailPage extends Component {
         }}
       </Mutation>
     )
-    if (!published) {
       return (
         <Fragment>
-          {publishMutation}
           {deleteMutation}
         </Fragment>
       )
-    }
-    return deleteMutation
   }
-
 }
 
-const POST_QUERY = gql`
-  query PostQuery($id: ID!) {
-    post(id: $id) {
+const QUESTION_QUERY = gql`
+  query QuestionQuery($id: ID!) {
+    question(id: $id) {
       id
       title
-      content
-      published
+      options
     }
   }
 `
