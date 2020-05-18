@@ -7,6 +7,6 @@ type Post {
 
 type Question {
   id: ID! @id
-  options: [String]! @default(value: [])
+  options: String!
   title: String!
 }

@@ -6,14 +6,14 @@ const resolvers = {
     feed: (parent, args, context) => {
       return context.prisma.posts({ where: { published: true } })
     },
-    questions: (parent, args, context) => {
-      return context.prisma.questions()
-    },
     drafts: (parent, args, context) => {
       return context.prisma.posts({ where: { published: false } })
     },
     post: (parent, { id }, context) => {
       return context.prisma.post({ id })
+    },
+    getQuestions: (parent, args, context) => {
+      return context.prisma.questions()
     },
   },
   Mutation: {
@@ -21,6 +21,13 @@ const resolvers = {
       return context.prisma.createPost({
         title,
         content,
+      })
+    },
+    createQuestion(parent, args, context) {
+      console.log(args)
+      return context.prisma.createQuestion({
+        title: 'hello',
+        options: 'asdasdasdasdasd'
       })
     },
     deletePost(parent, { id }, context) {

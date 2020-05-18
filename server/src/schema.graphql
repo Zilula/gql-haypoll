@@ -1,12 +1,13 @@
 type Query {
   feed: [Post!]!
-  questions: [Question!]!
+  getQuestions: [Question!]!
   drafts: [Post!]!
   post(id: ID!): Post
 }
 
 type Mutation {
   createDraft(title: String!, content: String): Post
+  createQuestion(title: String!, options: String!): Question
   deletePost(id: ID!): Post
   publish(id: ID!): Post
 }
@@ -20,6 +21,6 @@ type Post {
 
 type Question {
   id: ID!
-  options: [String]!
   title: String!
+  options: String!
 }

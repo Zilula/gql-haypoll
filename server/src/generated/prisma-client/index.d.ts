@@ -153,6 +153,8 @@ export type PostOrderByInput =
 export type QuestionOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "options_ASC"
+  | "options_DESC"
   | "title_ASC"
   | "title_DESC";
 
@@ -231,6 +233,20 @@ export interface QuestionWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  options?: Maybe<String>;
+  options_not?: Maybe<String>;
+  options_in?: Maybe<String[] | String>;
+  options_not_in?: Maybe<String[] | String>;
+  options_lt?: Maybe<String>;
+  options_lte?: Maybe<String>;
+  options_gt?: Maybe<String>;
+  options_gte?: Maybe<String>;
+  options_contains?: Maybe<String>;
+  options_not_contains?: Maybe<String>;
+  options_starts_with?: Maybe<String>;
+  options_not_starts_with?: Maybe<String>;
+  options_ends_with?: Maybe<String>;
+  options_not_ends_with?: Maybe<String>;
   title?: Maybe<String>;
   title_not?: Maybe<String>;
   title_in?: Maybe<String[] | String>;
@@ -271,25 +287,17 @@ export interface PostUpdateManyMutationInput {
 
 export interface QuestionCreateInput {
   id?: Maybe<ID_Input>;
-  options?: Maybe<QuestionCreateoptionsInput>;
+  options: String;
   title: String;
 }
 
-export interface QuestionCreateoptionsInput {
-  set?: Maybe<String[] | String>;
-}
-
 export interface QuestionUpdateInput {
-  options?: Maybe<QuestionUpdateoptionsInput>;
+  options?: Maybe<String>;
   title?: Maybe<String>;
 }
 
-export interface QuestionUpdateoptionsInput {
-  set?: Maybe<String[] | String>;
-}
-
 export interface QuestionUpdateManyMutationInput {
-  options?: Maybe<QuestionUpdateoptionsInput>;
+  options?: Maybe<String>;
   title?: Maybe<String>;
 }
 
@@ -434,13 +442,13 @@ export interface AggregatePostSubscription
 
 export interface Question {
   id: ID_Output;
-  options: String[];
+  options: String;
   title: String;
 }
 
 export interface QuestionPromise extends Promise<Question>, Fragmentable {
   id: () => Promise<ID_Output>;
-  options: () => Promise<String[]>;
+  options: () => Promise<String>;
   title: () => Promise<String>;
 }
 
@@ -448,7 +456,7 @@ export interface QuestionSubscription
   extends Promise<AsyncIterator<Question>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  options: () => Promise<AsyncIterator<String[]>>;
+  options: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
 }
 
@@ -456,7 +464,7 @@ export interface QuestionNullablePromise
   extends Promise<Question | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  options: () => Promise<String[]>;
+  options: () => Promise<String>;
   title: () => Promise<String>;
 }
 
@@ -609,7 +617,7 @@ export interface QuestionSubscriptionPayloadSubscription
 
 export interface QuestionPreviousValues {
   id: ID_Output;
-  options: String[];
+  options: String;
   title: String;
 }
 
@@ -617,7 +625,7 @@ export interface QuestionPreviousValuesPromise
   extends Promise<QuestionPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  options: () => Promise<String[]>;
+  options: () => Promise<String>;
   title: () => Promise<String>;
 }
 
@@ -625,7 +633,7 @@ export interface QuestionPreviousValuesSubscription
   extends Promise<AsyncIterator<QuestionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  options: () => Promise<AsyncIterator<String[]>>;
+  options: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
 }
 

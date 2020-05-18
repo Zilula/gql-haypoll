@@ -6,7 +6,7 @@ import  { gql } from 'apollo-boost'
 export default class FeedPage extends Component {
   render() {
     return (
-      <Query query={FEED_QUERY}>
+      <Query query={QUESTIONS_QUERY}>
         {({ data, loading, error, refetch }) => {
           if (loading) {
             return (
@@ -45,13 +45,12 @@ export default class FeedPage extends Component {
   }
 }
 
-export const FEED_QUERY = gql`
-  query FeedQuery {
-    feed {
+export const QUESTIONS_QUERY = gql`
+  query QuestionsQuery {
+    getQuestions {
       id
-      content
+      options
       title
-      published
     }
   }
 `

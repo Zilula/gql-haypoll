@@ -3,7 +3,7 @@ import { Query, Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import  { gql } from 'apollo-boost'
 import { DRAFTS_QUERY } from './DraftsPage'
-import { FEED_QUERY } from './FeedPage'
+import { QUESTIONS_QUERY } from './FeedPage'
 
 class DetailPage extends Component {
   render() {
@@ -46,9 +46,9 @@ class DetailPage extends Component {
         mutation={PUBLISH_MUTATION}
         update={(cache, { data }) => {
           const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
-          const { feed } = cache.readQuery({ query: FEED_QUERY })
+          const { feed } = cache.readQuery({ query: QUESTIONS_QUERY })
           cache.writeQuery({
-            query: FEED_QUERY,
+            query: QUESTIONS_QUERY,
             data: { feed: feed.concat([data.publish]) },
           })
           cache.writeQuery({
@@ -81,9 +81,9 @@ class DetailPage extends Component {
         mutation={DELETE_MUTATION}
         update={(cache, { data }) => {
           if (published) {
-            const { feed } = cache.readQuery({ query: FEED_QUERY })
+            const { feed } = cache.readQuery({ query: QUESTIONS_QUERY })
             cache.writeQuery({
-              query: FEED_QUERY,
+              query: QUESTIONS_QUERY,
               data: {
                 feed: feed.filter(post => post.id !== data.deletePost.id),
               },

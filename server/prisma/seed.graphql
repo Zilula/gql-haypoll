@@ -27,4 +27,13 @@ mutation {
   ) {
     id
   }
+  
+  questionOne: createQuestion(
+    data: {
+      title: "Follow Prisma on Twitter"
+      options: ["1", "2"]
+    }
+  ) {
+    id
+  }
 }

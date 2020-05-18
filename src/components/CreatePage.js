@@ -13,7 +13,7 @@ class CreatePage extends Component {
   render() {
     return (
       <Mutation
-        mutation={CREATE_DRAFT_MUTATION}
+        mutation={CREATE_QUESTION_MUTATION}
         update={(cache, { data }) => {
           const { drafts } = cache.readQuery({ query: DRAFTS_QUERY })
           cache.writeQuery({
@@ -22,15 +22,15 @@ class CreatePage extends Component {
           })
         }}
       >
-        {(createDraft, { data, loading, error }) => {
+        {(createQuestion, { data, loading, error }) => {
           return (
             <div className="pa4 flex justify-center bg-white">
               <form
                 onSubmit={async e => {
                   e.preventDefault()
-                  const { title, content } = this.state
-                  await createDraft({
-                    variables: { title, content },
+                  const { title, one, two } = this.state
+                  await createQuestion({
+                    variables: { title, options: [one, two] },
                   })
                   this.props.history.replace('/drafts')
                 }}
@@ -44,19 +44,30 @@ class CreatePage extends Component {
                   type="text"
                   value={this.state.title}
                 />
-                <textarea
-                  className="db w-100 ba bw1 b--black-20 pa2 br2 mb2"
-                  cols={50}
-                  onChange={e => this.setState({ content: e.target.value })}
-                  placeholder="Content"
-                  rows={8}
-                  value={this.state.content}
+                        <input
+                  autoFocus
+                  className="w-100 pa2 mv2 br2 b--black-20 bw1"
+                  onChange={e => this.setState({ one: e.target.value })}
+                  placeholder="One"
+                  type="text"
+                  value={this.state.one}
                 />
+
+          <input
+                  autoFocus
+                  className="w-100 pa2 mv2 br2 b--black-20 bw1"
+                  onChange={e => this.setState({ two: e.target.value })}
+                  placeholder="Two"
+                  type="text"
+                  value={this.state.two}
+                />
+
+
                 <input
                   className={`pa3 bg-black-10 bn ${this.state.content &&
                     this.state.title &&
                     'dim pointer'}`}
-                  disabled={!this.state.content || !this.state.title}
+                  disabled={!this.state.one || !this.state.title}
                   type="submit"
                   value="Create"
                 />
@@ -79,6 +90,16 @@ const CREATE_DRAFT_MUTATION = gql`
       id
       title
       content
+    }
+  }
+`
+
+const CREATE_QUESTION_MUTATION = gql`
+  mutation CreateQuestionMutation($title: String!, $options: [String!]!) {
+    createQuestion(title: $title, options: $options) {
+      id
+      title
+      options
     }
   }
 `

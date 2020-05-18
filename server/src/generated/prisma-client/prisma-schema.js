@@ -188,7 +188,7 @@ type Query {
 
 type Question {
   id: ID!
-  options: [String!]!
+  options: String!
   title: String!
 }
 
@@ -200,12 +200,8 @@ type QuestionConnection {
 
 input QuestionCreateInput {
   id: ID
-  options: QuestionCreateoptionsInput
+  options: String!
   title: String!
-}
-
-input QuestionCreateoptionsInput {
-  set: [String!]
 }
 
 type QuestionEdge {
@@ -216,13 +212,15 @@ type QuestionEdge {
 enum QuestionOrderByInput {
   id_ASC
   id_DESC
+  options_ASC
+  options_DESC
   title_ASC
   title_DESC
 }
 
 type QuestionPreviousValues {
   id: ID!
-  options: [String!]!
+  options: String!
   title: String!
 }
 
@@ -245,17 +243,13 @@ input QuestionSubscriptionWhereInput {
 }
 
 input QuestionUpdateInput {
-  options: QuestionUpdateoptionsInput
+  options: String
   title: String
 }
 
 input QuestionUpdateManyMutationInput {
-  options: QuestionUpdateoptionsInput
+  options: String
   title: String
-}
-
-input QuestionUpdateoptionsInput {
-  set: [String!]
 }
 
 input QuestionWhereInput {
@@ -273,6 +267,20 @@ input QuestionWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  options: String
+  options_not: String
+  options_in: [String!]
+  options_not_in: [String!]
+  options_lt: String
+  options_lte: String
+  options_gt: String
+  options_gte: String
+  options_contains: String
+  options_not_contains: String
+  options_starts_with: String
+  options_not_starts_with: String
+  options_ends_with: String
+  options_not_ends_with: String
   title: String
   title_not: String
   title_in: [String!]
