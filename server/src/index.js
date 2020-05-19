@@ -34,7 +34,7 @@ const resolvers = {
     },
     createVote(parent, { question, value }, context) {
       return context.prisma.createVote({
-        question,
+        question: { connect: { id: question } },
         value
       })
     },
