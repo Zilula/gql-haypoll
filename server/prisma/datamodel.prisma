@@ -12,6 +12,6 @@ type Question {
 }
 type Vote {
   id: ID! @id
-  question: Question  @relation(link: INLINE)
-  value: String!
+  value: String
+  question: String
 }

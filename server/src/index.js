@@ -9,14 +9,17 @@ const resolvers = {
     drafts: (parent, args, context) => {
       return context.prisma.posts({ where: { published: false } })
     },
-    post: (parent, { id }, context) => {
-      return context.prisma.post({ id })
-    },
     getQuestions: (parent, args, context) => {
       return context.prisma.questions()
     },
     question: (parent, {id}, context) => {
       return context.prisma.question({id})
+    },
+    getQVotes: (parent, { id }, context) => {
+      return context.prisma.votes({where: {question: id}})
+    },
+    getAllVotes: (parent, args, context) => {
+      return context.prisma.votes()
     }
   },
   Mutation: {
@@ -34,8 +37,8 @@ const resolvers = {
     },
     createVote(parent, { question, value }, context) {
       return context.prisma.createVote({
-        question: { connect: { id: question } },
-        value
+        question,
+        value   
       })
     },
     deletePost(parent, { id }, context) {

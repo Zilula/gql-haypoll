@@ -22,7 +22,7 @@ class CreatePage extends Component {
                   e.preventDefault()
                   const { title, one, two } = this.state
                   await createQuestion({
-                    variables: { title, options: one + two },
+                    variables: { title, options: one + '|' + two },
                   })
                   this.props.history.push('/')
                 }}

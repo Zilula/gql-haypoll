@@ -2,40 +2,32 @@ import React, { Component, Fragment } from 'react'
 import { Query, Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import  { gql } from 'apollo-boost'
-import { QUESTIONS_QUERY } from './FeedPage'
 
 class DetailPage extends Component {
-  render() {
+    option = (option) => {
     return (
-      <Query query={QUESTION_QUERY} variables={{ id: this.props.match.params.id }}>
-        {({ data, loading, error }) => {
-          if (loading) {
-            return (
-              <div className="flex w-100 h-100 items-center justify-center pt7">
-                <div>Loading ...</div>
-              </div>
-            )
-          }
-
-          if (error) {
-            return (
-              <div className="flex w-100 h-100 items-center justify-center pt7">
-                <div>An unexpected error occured.</div>
-              </div>
-            )
-          }
-
-          const { question } = data
-          const action = this._renderAction(question)
+      <>
+       <Mutation
+        mutation={VOTE_MUTATION}
+      >
+        {(createVote, { data, loading, error }) => {
           return (
-            <Fragment>
-              <h1 className="f3 black-80 fw4 lh-solid">{data.question.title}</h1>
-              <p className="black-80 fw3">{data.question.options}</p>
-              {action}
-            </Fragment>
+            <a
+              className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
+              onClick={async () => {
+
+                console.log('fuckl', option)
+                await createVote({
+                  variables: { question: this.props.match.params.id, value: option  },
+                })
+              }}
+            >
+              {option}
+            </a>
           )
         }}
-      </Query>
+      </Mutation>
+      </>
     )
   }
 
@@ -67,6 +59,40 @@ class DetailPage extends Component {
         </Fragment>
       )
   }
+
+  render() {
+    return (
+      <Query query={QUESTION_QUERY} variables={{ id: this.props.match.params.id }}>
+        {({ data, loading, error }) => {
+          if (loading) {
+            return (
+              <div className="flex w-100 h-100 items-center justify-center pt7">
+                <div>Loading ...</div>
+              </div>
+            )
+          }
+
+          if (error) {
+            return (
+              <div className="flex w-100 h-100 items-center justify-center pt7">
+                <div>An unexpected error occured.</div>
+              </div>
+            )
+          }
+
+          const { question } = data
+          const action = this._renderAction(question)
+          return (
+            <Fragment>
+              <h1 className="f3 black-80 fw4 lh-solid">{data.question.title}</h1>
+              <p className="black-80 fw3">{data.question.options.split('|').map(o => this.option(o))}</p>
+              {action}
+            </Fragment>
+          )
+        }}
+      </Query>
+    )
+  }
 }
 
 const QUESTION_QUERY = gql`
@@ -79,11 +105,11 @@ const QUESTION_QUERY = gql`
   }
 `
 
-const PUBLISH_MUTATION = gql`
-  mutation PublishMutation($id: ID!) {
-    publish(id: $id) {
-      id
-      published
+const VOTE_MUTATION = gql`
+  mutation CreateVote($question: String, $value: String) {
+    createVote(question: $question, value: $value) {
+      question
+      value
     }
   }
 `

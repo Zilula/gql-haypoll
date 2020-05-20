@@ -4,12 +4,14 @@ type Query {
   drafts: [Post!]!
   post(id: ID!): Post
   question(id: ID): Question
+  getQVotes(id: ID): [Vote]
+  getAllVotes: [Vote]
 }
 
 type Mutation {
   createDraft(title: String!, content: String): Post
   createQuestion(title: String!, options: String!): Question
-  createVote(question: ID, value: String): Vote
+  createVote(question: String, value: String): Vote
   deletePost(id: ID!): Post
   publish(id: ID!): Post
 }
@@ -28,6 +30,6 @@ type Question {
 }
 type Vote {
   id: ID!
-  question: Question
+  question: String 
   value: String
 }
