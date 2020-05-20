@@ -33,3 +33,9 @@ type Vote {
   question: String 
   value: String
 }
+
+
+
+type Subscription {
+  newVote: Vote
+}

@@ -8,8 +8,14 @@ import {
   Switch,
 } from 'react-router-dom'
 import { ApolloProvider } from 'react-apollo'
-import ApolloClient from 'apollo-boost'
-
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { ApolloLink } from 'apollo-link';
+import { split } from 'apollo-link'
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
 import FeedPage from './components/FeedPage'
 import CreatePage from './components/CreatePage'
 import DetailPage from './components/DetailPage'
@@ -17,8 +23,30 @@ import DetailPage from './components/DetailPage'
 import 'tachyons'
 import './index.scss'
 
-const client = new ApolloClient({ uri: 'http://localhost:4000' })
+const httpLink = createHttpLink({
+  uri: 'http://localhost:4000',
+})
 
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000`,
+  options: {
+    reconnect: true
+  },
+})
+
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query)
+    return kind === 'OperationDefinition' && operation === 'subscription'
+  },
+  wsLink,
+  httpLink
+)
+
+const client = new ApolloClient({
+  link,
+  cache: new InMemoryCache(),
+})
 ReactDOM.render(
   <ApolloProvider client={client}>
     <Router>

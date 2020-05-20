@@ -1,10 +1,13 @@
-import React, { Component, Fragment } from 'react'
-import { Query, Mutation } from 'react-apollo'
+import React, { Fragment } from 'react'
+import { Query, Mutation, useSubscription } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import  { gql } from 'apollo-boost'
 
-class DetailPage extends Component {
-    option = (option) => {
+const DetailPage = (props) => {
+
+
+  const { data, loading } = useSubscription(VOTE_SUBSCRIPTION);
+    const option = (option) => {
     return (
       <>
        <Mutation
@@ -15,10 +18,8 @@ class DetailPage extends Component {
             <a
               className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
               onClick={async () => {
-
-                console.log('fuckl', option)
                 await createVote({
-                  variables: { question: this.props.match.params.id, value: option  },
+                  variables: { question: props.match.params.id, value: option  },
                 })
               }}
             >
@@ -30,69 +31,41 @@ class DetailPage extends Component {
       </>
     )
   }
+              console.log('fuck', data)
 
-  _renderAction = ({ id }) => {
-    const deleteMutation = (
-      <Mutation
-        mutation={DELETE_MUTATION}
-      >
-        {(deletePost, { data, loading, error }) => {
-          return (
-            <a
-              className="f6 dim br1 ba ph3 pv2 mb2 dib black pointer"
-              onClick={async () => {
-                await deletePost({
-                  variables: { id },
-                })
-                this.props.history.replace('/')
-              }}
-            >
-              Delete
-            </a>
-          )
-        }}
-      </Mutation>
-    )
-      return (
-        <Fragment>
-          {deleteMutation}
-        </Fragment>
-      )
-  }
 
-  render() {
     return (
-      <Query query={QUESTION_QUERY} variables={{ id: this.props.match.params.id }}>
-        {({ data, loading, error }) => {
-          if (loading) {
-            return (
-              <div className="flex w-100 h-100 items-center justify-center pt7">
-                <div>Loading ...</div>
-              </div>
-            )
-          }
+      <>
+        <Query query={QUESTION_QUERY} variables={{ id: props.match.params.id }}>
+          {({ data, loading, error }) => {
+            if (loading) {
+              return (
+                <div className="flex w-100 h-100 items-center justify-center pt7">
+                  <div>Loading ...</div>
+                </div>
+              )
+            }
 
-          if (error) {
-            return (
-              <div className="flex w-100 h-100 items-center justify-center pt7">
-                <div>An unexpected error occured.</div>
-              </div>
-            )
-          }
+            if (error) {
+              return (
+                <div className="flex w-100 h-100 items-center justify-center pt7">
+                  <div>An unexpected error occured.</div>
+                </div>
+              )
+            }
 
-          const { question } = data
-          const action = this._renderAction(question)
-          return (
-            <Fragment>
-              <h1 className="f3 black-80 fw4 lh-solid">{data.question.title}</h1>
-              <p className="black-80 fw3">{data.question.options.split('|').map(o => this.option(o))}</p>
-              {action}
-            </Fragment>
-          )
-        }}
-      </Query>
+            const { question } = data
+            return (
+              <Fragment>
+                <h1 className="f3 black-80 fw4 lh-solid">{data.question.title}</h1>
+                <p className="black-80 fw3">{data.question.options.split('|').map(o => option(o))}</p>
+              </Fragment>
+            )
+          }}
+        </Query>
+        {!loading && <h2>{data.newVote?.value || ''}</h2>}
+      </>
     )
-  }
 }
 
 const QUESTION_QUERY = gql`
@@ -114,12 +87,13 @@ const VOTE_MUTATION = gql`
   }
 `
 
-const DELETE_MUTATION = gql`
-  mutation DeleteMutatoin($id: ID!) {
-    deletePost(id: $id) {
-      id
-    }
+const VOTE_SUBSCRIPTION = gql`
+subscription {
+  newVote {
+    id
+    value
   }
+}
 `
 
 export default withRouter(DetailPage)
