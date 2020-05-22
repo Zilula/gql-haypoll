@@ -23,12 +23,15 @@ import DetailPage from './components/DetailPage'
 import 'tachyons'
 import './index.scss'
 
+const httpServer = process.env.env === 'prod' ? 'https://us1.prisma.sh/public-shortking-905/haypoll/dev' : 'http://localhost:4000'
+const wsServer = process.env.env === 'prod' ? 'wss://us1.prisma.sh/public-shortking-905/haypoll/dev' : 'ws://localhost:4000'
+
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000',
+  uri: httpServer,
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
+  uri: wsServer,
   options: {
     reconnect: true
   },
